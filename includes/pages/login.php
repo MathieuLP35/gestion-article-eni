@@ -1,5 +1,6 @@
 <?php
     require_once "includes/functions.php";
+    require_once "includes/class/Utilisateur.php";
 
     $sizePost = sizeof($_POST);
 
@@ -23,22 +24,10 @@
         if (!$password){ $errors["password"] = "Vous devez renseigner un mot de passe"; }
 
         if($errors["email"] == "" && $errors["password"] == ""){
-            $connexion = connectBDD();
-            $r = $connexion->prepare("SELECT * FROM utilisateurs WHERE email = :email");
-            $r->bindParam(':email', $email);
-            $r->execute();
-            $user = $r->fetch(PDO::FETCH_ASSOC);
-
-            if($user){
-                if($user["mot_de_passe"] == $password){
-                    $_SESSION["user"] = $user;
-                    header("Location: /");
-                } else {
-                    $errors["password"] = "Le mot de passe est incorrect";
-                }
-            } else {
-                $errors["email"] = "L'email n'existe pas";
-            }
+            $user = new Utilisateur();
+            $user->setEmail($email);
+            $user->setMotDePasse($password);
+            $user->login();
         }
 
     }

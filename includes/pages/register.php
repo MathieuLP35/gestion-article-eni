@@ -1,5 +1,6 @@
 <?php
     require_once "includes/functions.php";
+    require_once "includes/class/Utilisateur.php";
 
     $sizePost = sizeof($_POST);
     $errors["no_name"] = "";
@@ -51,14 +52,8 @@
         $errors["no_password_confirm"] == "" &&
         $errors["no_email"] == "" &&
         $errors["email_format"] == ""){
-            $connexion = connectBDD();
-            $r = $connexion->prepare("INSERT INTO utilisateurs (nom, prenom, email, mot_de_passe) VALUES (:nom, :prenom, :email, :mot_de_passe)");
-            $r->bindParam(':nom', $nom);
-            $r->bindParam(':prenom', $prenom);
-            $r->bindParam(':email', $email);
-            $r->bindParam(':mot_de_passe', $password);
-            $r->execute();
-            header("Location: ?page=login");
+            $user = new Utilisateur("", $nom, $prenom, $email, password_hash($password, PASSWORD_DEFAULT));
+            $user->save();
         }
 
     }

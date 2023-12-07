@@ -28,14 +28,20 @@ function checkPassword($chaine) {
     }
 }
 
+function utf8($chaine){
+    return mb_convert_encoding($chaine, 'UTF-8', 'ISO-8859-1');
+}
+
 
 function connectBDD()
 {
     global $serveur, $utilisateur, $mot_de_passe, $nom_base_de_donnees;
 
     try {
-        // Connexion à la base de données avec PDO
-        $connexion = new PDO("mysql:host=$serveur;dbname=$nom_base_de_donnees", $utilisateur, $mot_de_passe);
+        // Connexion à la base de données avec PDO en UTF-8
+        $connexion = new PDO("mysql:host=$serveur;dbname=$nom_base_de_donnees;charset=utf8", $utilisateur, $mot_de_passe);
+
+        $connexion->exec("SET CHARACTER SET utf8");
 
         // Configuration pour afficher les erreurs SQL
         $connexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
